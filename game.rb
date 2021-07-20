@@ -10,9 +10,10 @@ class Game
     @players << @player1 #index 0
     @players << @player2 #index 1
 
-    @current_player = 0
+    @current_player = rand(0...1)
     @winner = nil
     @game_status = "ongoing"
+    puts "----------Start----------"
 
   end
 
@@ -26,7 +27,6 @@ class Game
       puts "#{@players[@current_player].name}: #{question.ask_question}"
       playeranswer = gets.chomp.to_i
       check_answer(playeranswer, answer)
-     # @game_status = "ended"
       
     end
   end
@@ -34,19 +34,20 @@ class Game
   def check_answer(playeranswer, answer)
     player = @players[@current_player]
     if answer == playeranswer
-      puts "Yes, you are right!"
+      puts "     Yes, that is correct!     "
     else
-      puts "No, not right"
+      puts "     No, this is not right!     "
      
       player.lose_life
-
+      puts "\n----------Score Count----------"
+      puts "Player 1: #{@players[0].lives}/3 vs. Player 2: #{@players[1].lives}/3 "
+      #puts "\n----------New Turn----------"
     end
-    
-    
+        
     if player.is_alive
     else
-      puts "No more lives"
-      end_game
+      puts "Sorry, you have no more lives"
+      return end_game
     end
     change_player
   end
@@ -57,11 +58,14 @@ class Game
     else
       @current_player = 0
     end
+    puts "\n----------New Turn----------"
   end
 
   def end_game
     @game_status = "ended"
     change_player
-    puts "The winner is #{@players[@current_player].name}"
+    puts "The winner is #{@players[@current_player].name} with a score #{@players[@current_player].lives}/3"
+    puts "-----------Game Over-----------"
+    puts "Good Bye!"
   end
 end
