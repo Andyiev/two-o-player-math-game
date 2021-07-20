@@ -4,47 +4,37 @@ require_relative "question"
 
 class Game
   def initialize
-    @players = []
-    @player1 = Player.new("Player1")
-    @player2 = Player.new("Player2")
-    @players << @player1 #index 0
-    @players << @player2 #index 1
-
-    @current_player = rand(0...1)
+    @players = [Player.new("Player1"), Player.new("Player2")]
+    @player1 = @players[0]
+    @player2 = @players[1]
+    @current_player = @players[rand(0...1)]
     @winner = nil
-    @game_status = "ongoing"
+    @is_complete = false
     puts "----------Start----------"
-
   end
 
   def start_game
     #if they have lives
-    until @game_status == "ended"
-
+    until @is_complete
       question = Question.new
       answer = question.answer
-
-      puts "#{@players[@current_player].name}: #{question.ask_question}"
+      puts "#{@current_player.name}: #{question.ask_question}"
       playeranswer = gets.chomp.to_i
       check_answer(playeranswer, answer)
-      
-    end
+      end
   end
 
   def check_answer(playeranswer, answer)
-    player = @players[@current_player]
     if answer == playeranswer
       puts "     Yes, that is correct!     "
     else
       puts "     No, this is not right!     "
-     
-      player.lose_life
+      @current_player.lose_life
       puts "\n----------Score Count----------"
-      puts "Player 1: #{@players[0].lives}/3 vs. Player 2: #{@players[1].lives}/3 "
-      #puts "\n----------New Turn----------"
+      puts "Player 1: #{@player1.lives}/3 vs. Player 2: #{@player2.lives}/3 "
     end
         
-    if player.is_alive
+    if @current_player.is_alive
     else
       puts "Sorry, you have no more lives"
       return end_game
@@ -53,18 +43,18 @@ class Game
   end
 
   def change_player
-    if @current_player == 0 
-      @current_player = 1
+    if @current_player == @player1 
+      @current_player = @player2
     else
-      @current_player = 0
+      @current_player = @player1
     end
     puts "\n----------New Turn----------"
   end
 
   def end_game
-    @game_status = "ended"
+    @is_complete = true
     change_player
-    puts "The winner is #{@players[@current_player].name} with a score #{@players[@current_player].lives}/3"
+    puts "The winner is #{@current_player.name} with a score #{@current_player.lives}/3"
     puts "-----------Game Over-----------"
     puts "Good Bye!"
   end
